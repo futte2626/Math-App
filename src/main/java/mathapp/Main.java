@@ -1,5 +1,4 @@
 package mathapp;
-import mathapp.gui.GUI2D;
 import mathapp.gui.SetupJFrame;
 
 public class Main {
