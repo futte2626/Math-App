@@ -9,4 +9,8 @@ module mathapp {
 
     // Optional: export package if other modules need it
     exports mathapp;
+    exports mathapp.gui;
+    opens mathapp.gui to javafx.fxml, javafx.graphics;
+    exports mathapp.objects.twoD;
+    opens mathapp.objects.twoD to javafx.fxml, javafx.graphics;
 }

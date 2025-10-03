@@ -131,7 +131,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>mathapp.GUI3D</mainClass>
+                            <mainClass>mathapp.gui.GUI3D</mainClass>
                         </configuration>
                     </execution>
                 </executions>

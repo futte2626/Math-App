@@ -1,0 +1,48 @@
+package mathapp.objects.twoD;
+
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.BasicStroke;
+
+import java.awt.geom.Point2D;
+import java.util.function.Function;
+
+public class Function2D implements Drawable2D {
+    private Function<Double, Double> function; // the actual f(x)
+    private Color color;
+    private boolean visible;
+
+    public Function2D(Function<Double, Double> function, Color color) {
+        this.function = function;
+        this.color = color;
+        this.visible = true;
+    }
+
+    public double eval(double x) {
+        return function.apply(x);
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+
+    public void draw(Graphics2D g2d, int scale, Point2D.Double origin) {
+        if (!visible) return;
+
+        g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(3));
+        int prevX = (int) -origin.x;
+        int prevY = (int) (eval(prevX / (double) scale) * scale);
+
+        for (int x = prevX + 1; x < g2d.getClipBounds().width - origin.x; x++) {
+            int y = (int) (eval(x / (double) scale) * scale);
+            g2d.drawLine(prevX, prevY, x, y); prevX = x; prevY = y;
+        }
+    }
+}

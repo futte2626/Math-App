@@ -1,4 +1,4 @@
-package mathapp;
+package mathapp.gui;
 
 import javafx.animation.RotateTransition;
 import javafx.application.Application;
