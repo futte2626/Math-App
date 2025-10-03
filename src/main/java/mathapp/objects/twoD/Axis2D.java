@@ -18,22 +18,23 @@ public class Axis2D implements Drawable2D{
     @Override
     public void draw(Graphics2D g2d, int scale, Point2D.Double origin) {
         // Draw axes
+        int width = g2d.getClipBounds().width;
+        int height = g2d.getClipBounds().height;
 
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(2));
-        g2d.drawLine((int) -origin.x, 0, (int) (g2d.getClipBounds().width-origin.x), 0); // X-axis
+        g2d.drawLine((int) -origin.x, 0, (int) (width-origin.x), 0); // X-axis
         g2d.scale(1, -1);
-        g2d.drawLine(0, (int) -origin.y, 0, (int) (g2d.getClipBounds().height - origin.y)); // Y-axis
+        g2d.drawLine(0, (int) -origin.y, 0, (int) (height - origin.y)); // Y-axis
         g2d.scale(1, -1);
 
         // Draw X-axis ticks and labels
         int tickLength = 7;
         g2d.scale(1, -1);
-        for (int x = (int) -origin.x; x < g2d.getClipBounds().width-origin.x; x++) {
+        for (int x = (int) -origin.x; x < width-origin.x; x++) {
             if(x==0) continue;
-            if((x) % tickSpacing == 0){
+            if(x % tickSpacing == 0){
                 g2d.drawLine(x, -tickLength, x, tickLength);
-
                 String nmbString = String.format("%.2f", x / (double)scale);
                 g2d.drawString(nmbString, x-3, 20);
 
@@ -42,7 +43,7 @@ public class Axis2D implements Drawable2D{
         g2d.scale(1, -1);
 
         // Draw Y-axis ticks and labels
-        int bottomPixel = (int) -(g2d.getClipBounds().height- origin.y); // Bottom of screen
+        int bottomPixel = (int) -(height- origin.y); // Bottom of screen
         int topPixel = (int) origin.y; //Top of screen
 
         for (int y = bottomPixel; y <= topPixel; y++ ) {

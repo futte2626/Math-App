@@ -7,7 +7,6 @@ import mathapp.objects.twoD.Scene2D;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
@@ -21,16 +20,11 @@ public class GUI2D extends JPanel {
     private int dragPosX, dragPosY;
     int tickSpacing = 50;
 
-    private static ArrayList<Function2D> functions = new ArrayList<>();
-
-    public GUI2D() {
-        scene = new Scene2D();
-        scene.add(new Axis2D(tickSpacing));
-        scene.add(new Function2D(x -> Math.sin(x), Color.RED));
-        scene.add(new Function2D(x -> Math.cos(x), Color.BLUE));
-
-        setupFrame();
-        setupMouseControls();
+    public GUI2D(Scene2D scene, Point2D.Double origin, int scale) {
+        this.scene = scene;
+        this.origin = origin;
+        this.scale = scale;
+        setupMouseControls(); // optional
     }
 
     @Override
@@ -38,12 +32,11 @@ public class GUI2D extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        // Optional: enable anti-aliasing for smoother lines
+        // Anti-Aliasing for smooth lines
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
                 RenderingHints.VALUE_RENDER_QUALITY);
-
 
         // Translate origin
         g2d.translate(origin.x, origin.y);
@@ -59,7 +52,8 @@ public class GUI2D extends JPanel {
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
-        frame.add(this);        // add this JPanel
+        frame.add(this);  // add this JPanel
+        setBackground(Color.white);
         frame.setVisible(true);
     }
 

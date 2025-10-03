@@ -41,8 +41,16 @@ public class Function2D implements Drawable2D {
         int prevY = (int) (eval(prevX / (double) scale) * scale);
 
         for (int x = prevX + 1; x < g2d.getClipBounds().width - origin.x; x++) {
-            int y = (int) (eval(x / (double) scale) * scale);
-            g2d.drawLine(prevX, prevY, x, y); prevX = x; prevY = y;
+            double evalfed = (eval(x / (double) scale) * scale);
+            int y = (int)evalfed;
+            if(Double.isNaN(evalfed) || Double.isInfinite(evalfed)){
+                prevX = x;
+                prevY = y;
+                continue;
+            }
+            g2d.drawLine(prevX, prevY, x, y);
+            prevX = x;
+            prevY = y;
         }
     }
 }
