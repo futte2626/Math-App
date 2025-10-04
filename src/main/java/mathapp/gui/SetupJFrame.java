@@ -10,18 +10,20 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class SetupJFrame {
+    public static Scene2D scene = new Scene2D();
+
     public SetupJFrame() {
         try {
+            Font latexLike = new Font("Times New Roman", Font.PLAIN, 12);
             UIManager.setLookAndFeel( new FlatLightLaf() );
+            UIManager.put("defaultFont", latexLike);
         } catch( Exception ex ) {
             System.err.println( "Failed to initialize LaF" );
         }
 
-
-        Scene2D scene = new Scene2D();
         Point2D.Double origin = new Point2D.Double(400, 300);
-        int scale = 50;
-        scene.add(new Axis2D(50));
+        int scale = 150;
+        scene.add(new Axis2D(100));
         scene.add(new Function2D(x -> Math.sin(x), Color.RED));
         scene.add(new Function2D(x -> Math.cos(x), Color.BLUE));
 
@@ -37,7 +39,7 @@ public class SetupJFrame {
         frame.add(cmdLine, BorderLayout.SOUTH);
         frame.add(sidebar, BorderLayout.WEST);
         frame.add(drawingPanel, BorderLayout.CENTER);
-        frame.setSize(1000, 600);
+        frame.setSize(1500, 1000);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 

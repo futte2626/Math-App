@@ -13,7 +13,7 @@ public class SideBar extends JPanel {
     private JScrollPane scrollPane;
 
     public SideBar(GUI2D gui2D, Scene2D scene) {
-        setPreferredSize(new Dimension(200, gui2D.getPreferredSize().height));
+        setPreferredSize(new Dimension(300, gui2D.getPreferredSize().height));
         setLayout(new BorderLayout());
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(0, 1, 10, 5));

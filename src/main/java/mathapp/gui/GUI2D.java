@@ -1,6 +1,7 @@
 package mathapp.gui;
 
 
+import mathapp.objects.twoD.Axis2D;
 import mathapp.objects.twoD.Scene2D;
 import javax.swing.*;
 import java.awt.*;
@@ -9,9 +10,7 @@ import java.awt.geom.Point2D;
 
 public class GUI2D extends JPanel {
     public static Scene2D scene;
-    private SideBar sideBar = new SideBar(this, scene);
-
-    private int scale = 100;
+    private int scale;
     private Point2D.Double origin = new Point2D.Double(400, 300);
     private boolean dragging = false;
     private int dragPosX, dragPosY;
@@ -80,9 +79,26 @@ public class GUI2D extends JPanel {
 
         // zoom with mouse wheel
         addMouseWheelListener(e -> {
+            double zoomFactor = 1.1;
             int notches = e.getWheelRotation();
-            if (notches < 0) scale += 10;
-            else scale = Math.max(10, scale - 10);
+
+            // Save mouse position for focal zooming
+            double mouseX = e.getX();
+            double mouseY = e.getY();
+
+            // Convert mouse to world coordinates (before zoom)
+            double oldX = (mouseX - origin.x) / scale;
+            double oldY = (origin.y - mouseY) / scale;
+
+            if (notches < 0) scale *= zoomFactor;     // Zoom in
+            else scale /= zoomFactor;                 // Zoom out
+
+            double newX = (mouseX - origin.x) / scale;
+            double newY = (origin.y - mouseY) / scale;
+
+            origin.x += (newX - oldX) * scale;
+            origin.y -= (newY - oldY) * scale;
+
             repaint();
         });
     }
