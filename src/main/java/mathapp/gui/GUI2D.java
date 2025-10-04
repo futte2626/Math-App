@@ -9,6 +9,7 @@ import java.awt.geom.Point2D;
 
 public class GUI2D extends JPanel {
     public static Scene2D scene;
+    private SideBar sideBar = new SideBar(this, scene);
 
     private int scale = 100;
     private Point2D.Double origin = new Point2D.Double(400, 300);

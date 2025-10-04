@@ -5,9 +5,13 @@ import java.awt.geom.Point2D;
 
 public class Axis2D implements Drawable2D{
     private int tickSpacing;
+    private String axisName;
+    private Color color;
+    boolean visible;
 
     public Axis2D(int tickSpacing) {
         this.tickSpacing = tickSpacing;
+        visible = true;
     }
 
     @Override
@@ -21,6 +25,7 @@ public class Axis2D implements Drawable2D{
         int width = g2d.getClipBounds().width;
         int height = g2d.getClipBounds().height;
 
+        if(!visible){return;}
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(2));
         g2d.drawLine((int) -origin.x, 0, (int) (width-origin.x), 0); // X-axis
@@ -57,6 +62,11 @@ public class Axis2D implements Drawable2D{
             }
         }
     }
+    public Color getColor() {
+        return color;
+    }
+    public String getName() { return axisName; }
+    public void setVisible(boolean visible) { this.visible = visible; }
 
 
 }

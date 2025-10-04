@@ -1,13 +1,13 @@
 module mathapp {
-    requires  java.desktop;
-    requires javafx.controls;   // for Buttons, Sliders, etc.
-    requires javafx.graphics;   // for 3D graphics
-    requires javafx.fxml;       // only if you use FXML
+    requires java.desktop;
+    requires javafx.controls;
+    requires javafx.graphics;
+    requires javafx.fxml;
 
-    // Allow JavaFX to access your classes via reflection
+    requires java.base;
+    requires com.formdev.flatlaf;
+
     opens mathapp to javafx.graphics, javafx.fxml;
-
-    // Optional: export package if other modules need it
     exports mathapp;
     exports mathapp.gui;
     opens mathapp.gui to javafx.fxml, javafx.graphics;

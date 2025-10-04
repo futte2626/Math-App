@@ -12,6 +12,18 @@ public class Scene2D {
         objects.add(obj);
     }
 
+    public void remove(Drawable2D obj) {
+        objects.remove(obj);
+    }
+
+    public void clear() {
+        objects.clear();
+    }
+
+    public List<Drawable2D> getObjects() {
+        return new ArrayList<>(objects);
+    }
+
     public void drawAll(Graphics2D g2d, int scale, Point2D.Double origin) {
         for (Drawable2D obj : objects) {
             if (obj.isVisible()) {
