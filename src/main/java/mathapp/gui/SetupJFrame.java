@@ -14,23 +14,21 @@ public class SetupJFrame {
 
     public SetupJFrame() {
         try {
-            Font latexLike = new Font("Times New Roman", Font.PLAIN, 12);
             UIManager.setLookAndFeel( new FlatLightLaf() );
-            UIManager.put("defaultFont", latexLike);
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
-        }
+            UIManager.put("defaultFont", new Font("Times New Roman", Font.PLAIN, 12));
+        } catch( Exception ex ) {System.err.println( ex.getMessage());}
 
         Point2D.Double origin = new Point2D.Double(400, 300);
         int scale = 150;
+        GUI2D drawingPanel = new GUI2D(scene, origin, scale);
+        SideBar sidebar = new SideBar();
+        CommandLine cmdLine = new CommandLine(drawingPanel);
+        scene.addListener(sidebar);
         scene.add(new Axis2D(100));
-        scene.add(new Function2D(x -> Math.sin(x), Color.RED));
-        scene.add(new Function2D(x -> Math.cos(x), Color.BLUE));
+        scene.add(new Function2D(x -> Math.sin(x), Color.RED, "g(x)"));
+        scene.add(new Function2D(x -> Math.cos(x), Color.BLUE, "h(x)"));
 
         //Create panels
-        GUI2D drawingPanel = new GUI2D(scene, origin, scale);
-        SideBar sidebar = new SideBar(drawingPanel, scene);
-        CommandLine cmdLine = new CommandLine(drawingPanel);
 
         // Layout
         JFrame frame = new JFrame("MathApp 2D");

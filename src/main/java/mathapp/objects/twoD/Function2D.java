@@ -14,9 +14,10 @@ public class Function2D implements Drawable2D {
     private boolean visible;
     private String name;
 
-    public Function2D(Function<Double, Double> function, Color color) {
+    public Function2D(Function<Double, Double> function, Color color, String name) {
         this.function = function;
         this.color = color;
+        this.name = name;
         this.visible = true;
     }
 
