@@ -1,5 +1,6 @@
 package mathapp.gui;
 
+import mathapp.objects.twoD.Function2D;
 import mathapp.parser.ShuntingYard;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
@@ -8,72 +9,74 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SideBarItem extends JPanel {
+    private final Function2D function;
     private final String infoText;
 
-    public SideBarItem(String text) {
-        this.infoText = text;
+    public SideBarItem(Function2D function) {
+        this.function = function;
+        this.infoText = function.getName();
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createLineBorder(Color.black));
         setBackground(Color.white);
+        setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Split into LHS and RHS
-        String[] parts = text.split("=");
-        if (parts.length < 2) return;
-        String lhs = parts[0].trim();
-        String rhs = parts[1].trim();
+        // ---------- Top: formula, forced left ----------
+        JPanel formulaRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        formulaRow.setOpaque(false);
 
-        // Convert RHS to LaTeX
-        String latexText = ShuntingYard.toLatex(rhs);
+        JLabel latexLabel = null;
+        String[] parts = infoText != null ? infoText.split("=") : new String[0];
+        if (parts.length >= 2) {
+            String lhs = parts[0].trim();
+            String rhs = parts[1].trim();
+            String latexText = ShuntingYard.toLatex(rhs);
 
-        // Render formula (slightly smaller)
-        TeXFormula formula = new TeXFormula("$" + lhs + "=" + latexText + "$");
-        TeXIcon icon = formula.createTeXIcon(TeXFormula.SERIF, 18);
+            TeXFormula formula = new TeXFormula("$" + lhs + "=" + latexText + "$");
+            TeXIcon icon = formula.createTeXIcon(TeXFormula.SERIF, 18);
+            latexLabel = new JLabel(icon);
+            formulaRow.add(latexLabel);
+        }
+        add(formulaRow);
+        add(Box.createRigidArea(new Dimension(0, 6)));
 
-        JLabel label = new JLabel(icon);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        // ---------- Controls: left-aligned single row ----------
+        JPanel controlRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
+        controlRow.setOpaque(false);
 
-        // --- Control row ---
-        JPanel controlRow = new JPanel();
-        controlRow.setLayout(new BoxLayout(controlRow, BoxLayout.X_AXIS));
-        controlRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JButton delBtn  = makeUtilButton("Del", 50);
+        JButton hideBtn = makeUtilButton("Hide", 60);
 
-        // Buttons (smaller)
-        controlRow.add(makeCompactButton("Del", 50, 25));
-        controlRow.add(Box.createRigidArea(new Dimension(4, 0)));
-        controlRow.add(makeCompactButton("Hide", 55, 25));
-        controlRow.add(Box.createRigidArea(new Dimension(8, 0)));
+        // actions
+        delBtn.addActionListener(e ->
+                firePropertyChange("deleteFunction", null, function));
 
-        // Color buttons (smaller squares)
+        hideBtn.addActionListener(e -> {
+            boolean newVisible = !function.isVisible();
+            function.setVisible(newVisible);
+            hideBtn.setText(newVisible ? "Hide" : "Show");
+            firePropertyChange("toggleVisibility", !newVisible, newVisible);
+        });
+
+        controlRow.add(delBtn);
+        controlRow.add(hideBtn);
+
         controlRow.add(makeColorButton(Color.red));
-        controlRow.add(Box.createRigidArea(new Dimension(4, 0)));
         controlRow.add(makeColorButton(Color.green));
-        controlRow.add(Box.createRigidArea(new Dimension(4, 0)));
         controlRow.add(makeColorButton(Color.cyan));
-        controlRow.add(Box.createRigidArea(new Dimension(4, 0)));
         controlRow.add(makeColorButton(Color.blue));
 
-        // Ensure row fits
-        controlRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
-
-        // Add everything
-        add(label);
-        add(Box.createRigidArea(new Dimension(0, 6))); // spacing
         add(controlRow);
 
-        // --- Fix item height ---
-        int height = icon.getIconHeight() + 50;
-        setPreferredSize(new Dimension(225, height));
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, height)); // full width, fixed height
-    }
+        // ---------- Fix the component size (no vertical stretching) ----------
+        int labelH = (latexLabel != null) ? latexLabel.getPreferredSize().height : 0;
+        int controlsH = controlRow.getPreferredSize().height;
+        int totalH = labelH + 6 + controlsH + 6; // small padding
+        int width = 250;                          // your sidebar width
 
-    private JButton makeCompactButton(String text, int w, int h) {
-        JButton btn = new JButton(text);
-        btn.setPreferredSize(new Dimension(w, h));
-        btn.setMaximumSize(new Dimension(w, h));
-        btn.setMinimumSize(new Dimension(w, h));
-        btn.setFocusPainted(false);
-        return btn;
+        setMinimumSize(new Dimension(width, totalH));
+        setPreferredSize(new Dimension(width, totalH));
+        setMaximumSize(new Dimension(width, totalH)); // fixed height -> won't fill half the bar
     }
 
     private JButton makeColorButton(Color color) {
@@ -84,10 +87,27 @@ public class SideBarItem extends JPanel {
         btn.setMinimumSize(new Dimension(25, 25));
         btn.setFocusPainted(false);
         btn.setBorder(BorderFactory.createLineBorder(Color.black));
+        btn.addActionListener(e -> {
+            function.setColor(color);
+            firePropertyChange("functionColor", null, color);
+        });
+        return btn;
+    }
+
+    private JButton makeUtilButton(String text, int w) {
+        JButton btn = new JButton(text);
+        btn.setPreferredSize(new Dimension(w, 25));
+        btn.setMaximumSize(new Dimension(w, 25));
+        btn.setMinimumSize(new Dimension(w, 25));
+        btn.setFocusPainted(false);
         return btn;
     }
 
     public String getText() {
         return infoText;
+    }
+
+    public Function2D getFunction() {
+        return function;
     }
 }

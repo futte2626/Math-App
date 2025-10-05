@@ -26,7 +26,7 @@ public class SetupJFrame {
         Point2D.Double origin = new Point2D.Double(400, 300);
         int scale = 150;
         GUI2D drawingPanel = new GUI2D(scene, origin, scale);
-        SideBar sidebar = new SideBar();
+        SideBar sidebar = new SideBar(drawingPanel);
         sidebar.setSize(250, drawingPanel.getHeight());
         CommandLine cmdLine = new CommandLine(drawingPanel);
         scene.addListener(sidebar);

@@ -28,7 +28,9 @@ public class Function2D implements Drawable2D {
     public Color getColor() {
         return color;
     }
+    public void setColor(Color c) { color = c;}
     public String getName() { return functionText; }
+    public Function<Double, Double> getFunction() { return function; }
     public void setVisible(boolean visible) { this.visible = visible; }
 
     public boolean isVisible() {
