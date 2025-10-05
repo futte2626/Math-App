@@ -1,5 +1,6 @@
 package mathapp.gui;
 
+import mathapp.AppCore;
 import mathapp.objects.twoD.Drawable2D;
 import mathapp.objects.twoD.Function2D;
 import mathapp.objects.twoD.Scene2D;
@@ -12,11 +13,14 @@ public class SideBar extends JPanel implements SceneListener {
     private final JScrollPane scrollPane;
     private final JPanel contentPanel;
     private final ArrayList<SideBarItem> items;
-    private final JPanel graphPanel; // panel where Scene2D is drawn
+    private final JPanel gui2D; // panel where Scene2D is drawn
+    private Scene2D scene;
 
-    public SideBar(JPanel graphPanel) {
-        this.graphPanel = graphPanel;
+    public SideBar() {
+        this.gui2D = AppCore.gui2D;
+        this.scene = AppCore.scene2D;
 
+        setSize(250, gui2D.getHeight());
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(250, 1000));
 
@@ -35,48 +39,41 @@ public class SideBar extends JPanel implements SceneListener {
         items = new ArrayList<>();
     }
 
-    private void addItem(Function2D func) {
+    public void AddItem(Function2D func) {
         SideBarItem item = new SideBarItem(func);
         item.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Listen for color changes
-        item.addPropertyChangeListener("functionColor", evt -> {
-            graphPanel.repaint(); // redraw when function color changes
+        // --- hook up listeners ---
+        item.addPropertyChangeListener("toggleVisibility", evt -> {
+            // function visibility already toggled inside item
+            gui2D.repaint();
         });
 
-        // Handle "Del" button
+        item.addPropertyChangeListener("functionColor", evt -> {
+            gui2D.repaint();
+        });
+
         item.addPropertyChangeListener("deleteFunction", evt -> {
-            // remove from sidebar
+            scene.remove(func); // remove from scene
             items.remove(item);
             contentPanel.remove(item);
             contentPanel.revalidate();
             contentPanel.repaint();
-
-            // also remove from Scene2D
-            if (evt.getNewValue() instanceof Scene2D scene) {
-                scene.remove(func);
-            }
-
-            graphPanel.repaint();
-        });
-
-        // Handle "Hide" button
-        item.addPropertyChangeListener("toggleVisibility", evt -> {
-            func.setVisible(!func.isVisible());
-            graphPanel.repaint();
+            gui2D.repaint();
         });
 
         items.add(item);
         contentPanel.add(item);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 5))); // spacing
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         contentPanel.revalidate();
         contentPanel.repaint();
     }
 
+
     @Override
     public void objectAdded(Drawable2D obj) {
         if (obj instanceof Function2D func && func.getName() != null && !func.getName().isEmpty()) {
-            addItem(func);
+            AddItem(func);
         }
     }
 

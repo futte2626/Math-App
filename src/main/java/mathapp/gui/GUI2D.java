@@ -1,6 +1,7 @@
 package mathapp.gui;
 
 
+import mathapp.AppCore;
 import mathapp.objects.twoD.Axis2D;
 import mathapp.objects.twoD.Scene2D;
 import javax.swing.*;
@@ -9,14 +10,12 @@ import java.awt.event.*;
 import java.awt.geom.Point2D;
 
 public class GUI2D extends JPanel {
-    public static Scene2D scene;
     private int scale;
     private Point2D.Double origin = new Point2D.Double(400, 300);
     private boolean dragging = false;
     private int dragPosX, dragPosY;
 
-    public GUI2D(Scene2D scene, Point2D.Double origin, int scale) {
-        this.scene = scene;
+    public GUI2D(Point2D.Double origin, int scale) {
         this.origin = origin;
         this.scale = scale;
         setupMouseControls(); // optional
@@ -38,7 +37,7 @@ public class GUI2D extends JPanel {
         g2d.scale(1, -1); // flip Y-axis
 
         // Draw everything in the scene
-        scene.drawAll(g2d, scale, origin);
+        AppCore.scene2D.drawAll(g2d, scale, origin);
     }
 
     private void setupFrame() {

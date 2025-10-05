@@ -1,19 +1,22 @@
 package mathapp.gui;
 
+import mathapp.AppCore;
 import mathapp.commandHandlers.CommandParser;
+import mathapp.objects.twoD.Scene2D;
 
 import javax.swing.*;
 import java.awt.*;
-
-import static mathapp.gui.GUI2D.scene;
 
 public class CommandLine extends JPanel {
     CommandParser parser = new CommandParser();
     JTextField cmdField = new JTextField();
     private GUI2D gui2D;
+    private Scene2D scene;
 
-    public CommandLine(GUI2D gui2D) {
-        this.gui2D = gui2D;
+    public CommandLine() {
+        this.gui2D = AppCore.gui2D;
+        this.scene = AppCore.scene2D;
+
         setPreferredSize(new Dimension(650, 25));
         setBackground(Color.lightGray);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
