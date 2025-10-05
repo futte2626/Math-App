@@ -14,9 +14,11 @@ public class FunctionCommand implements Command {
         try {
             String[] parts = input.split("=");
             if(parts.length < 2) return;
-            Function<Double, Double> evaluator = ShuntingYard.parse(parts[1].trim());
-            Function2D func = new Function2D(evaluator, Color.red, parts[0].trim());
-
+            String left = parts[0].trim();
+            String right = parts[1].trim();
+            String definition = left + " = " + right;
+            Function<Double, Double> evaluator = ShuntingYard.parse(right);
+            Function2D func = new Function2D(evaluator, Color.red, definition);
             scene.add(func);
         }
         catch (Exception e) {

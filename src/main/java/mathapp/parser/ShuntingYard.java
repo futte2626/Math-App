@@ -26,6 +26,12 @@ public class ShuntingYard {
         return x -> evaluatePostfix(output, x);
     }
 
+    public static String toLatex(String input) {
+        List<Token> tokens = tokenize(input);
+        List<Token> output = toPostfix(tokens);
+        return postfixToLatex(output);
+    }
+
     // Tokenizes input
     private static List<Token> tokenize(String input) {
         List<Token> tokens = new ArrayList<>();
@@ -135,6 +141,46 @@ public class ShuntingYard {
                         case "tan" -> stack.push(Math.tan(a));
                         case "log" -> stack.push(Math.log(a));
                         case "sqrt" -> stack.push(Math.sqrt(a));
+                    }
+                }
+            }
+        }
+        return stack.pop();
+    }
+
+    private static String postfixToLatex(List<Token> postfix) {
+        Stack<String> stack = new Stack<>();
+        for (Token token : postfix) {
+            switch (token.type) {
+                case NUMBER, VARIABLE -> stack.push(token.value);
+                case FUNCTION -> {
+                    String arg = stack.pop();
+                    switch (token.value) {
+                        case "sin" -> stack.push("\\sin(" + arg + ")");
+                        case "cos" -> stack.push("\\cos(" + arg + ")");
+                        case "tan" -> stack.push("\\tan(" + arg + ")");
+                        case "log" -> stack.push("\\log(" + arg + ")");
+                        case "sqrt" -> stack.push("\\sqrt{" + arg + "}");
+                    }
+                }
+                case OPERATOR -> {
+                    String b = stack.pop();
+                    String a = stack.pop();
+                    switch (token.value) {
+                        case "+" -> stack.push(a + "+" + b);
+                        case "-" -> stack.push(a + "-" + b);
+                        case "*" -> {
+                            boolean aIsNum = a.matches("\\d+(\\.\\d+)?");
+                            boolean bIsNum = b.matches("\\d+(\\.\\d+)?");
+
+                            if (aIsNum && bIsNum) {
+                                stack.push(a + "\\cdot " + b);
+                            } else {
+                                stack.push(a + b);
+                            }
+                        }
+                        case "/" -> stack.push("\\frac{" + a + "}{" + b + "}");
+                        case "^" -> stack.push(a + "^{" + b + "}");
                     }
                 }
             }

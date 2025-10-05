@@ -12,12 +12,12 @@ public class Function2D implements Drawable2D {
     private Function<Double, Double> function; // the actual f(x)
     private Color color;
     private boolean visible;
-    private String name;
+    private String functionText;
 
-    public Function2D(Function<Double, Double> function, Color color, String name) {
+    public Function2D(Function<Double, Double> function, Color color, String text) {
         this.function = function;
         this.color = color;
-        this.name = name;
+        this.functionText = text;
         this.visible = true;
     }
 
@@ -28,7 +28,7 @@ public class Function2D implements Drawable2D {
     public Color getColor() {
         return color;
     }
-    public String getName() { return name; }
+    public String getName() { return functionText; }
     public void setVisible(boolean visible) { this.visible = visible; }
 
     public boolean isVisible() {

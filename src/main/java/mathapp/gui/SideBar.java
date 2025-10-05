@@ -3,6 +3,7 @@ package mathapp.gui;
 
 import mathapp.objects.twoD.Drawable2D;
 import mathapp.objects.twoD.Scene2D;
+import mathapp.parser.ShuntingYard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +37,7 @@ public class SideBar extends JPanel implements SceneListener {
 
     public void AddItem(String text) {
         SideBarItem item = new SideBarItem(text);
-        item.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); // fixed height, stretch width
+      //  item.setMaximumSize(new Dimension(Integer.MAX_VALUE, 400)); // fixed height, stretch width
         item.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         items.add(item);
