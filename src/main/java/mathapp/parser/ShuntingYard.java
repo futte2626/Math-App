@@ -7,33 +7,38 @@ import static mathapp.parser.Token.Type.OPERATOR;
 public class ShuntingYard {
 
     private static final Set<String> FUNCTIONS = Set.of("sin","cos","tan","log","sqrt");
+    private static final Set<String> CONSTANTS = Set.of("pi", "e", "g", "gr");
     private static final Map<String, Integer> PRECEDENCE = Map.of(
-            "+", 2,
-            "-", 2,
-            "*", 3,
-            "/", 3,
-            "^", 4
+            "+", 1,
+            "-", 1,
+            "*", 2,
+            "/", 2,
+            "^", 3
     );
 
     private static final Map<String, Boolean> RIGHT_ASSOC = Map.of(
             "^", true
     );
 
-    public static Function<Double, Double> parse(String input) {
-        List<Token> tokens = tokenize(input);
+   // public static Function<Double, Double> parseFunction(String input) {
+
+    //};
+
+    public static Function<Double, Double> parseFunction(String input, String variable) {
+        List<Token> tokens = tokenize(input, variable);
         List<Token> output = toPostfix(tokens);
 
         return x -> evaluatePostfix(output, x);
     }
 
-    public static String toLatex(String input) {
-        List<Token> tokens = tokenize(input);
+    public static String toLatex(String input, String variable) {
+        List<Token> tokens = tokenize(input, variable);
         List<Token> output = toPostfix(tokens);
         return postfixToLatex(output);
     }
 
     // Tokenizes input
-    private static List<Token> tokenize(String input) {
+    private static List<Token> tokenize(String input, String variable) {
         List<Token> tokens = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < input.length(); i++) {
@@ -58,8 +63,9 @@ public class ShuntingYard {
                 }
                 i--;
                 String word = sb.toString();
-                if (word.equals("x")) tokens.add(new Token(Token.Type.VARIABLE, "x"));
+                if (word.equals(variable)) tokens.add(new Token(Token.Type.VARIABLE, variable));
                 else if (FUNCTIONS.contains(word)) tokens.add(new Token(Token.Type.FUNCTION, word));
+                else if (CONSTANTS.contains(word)) tokens.add(new Token(Token.Type.CONSTANT, word));
                 else throw new RuntimeException("Unknown function: " + word);
             }
             else if ("+-*/^".indexOf(c) >= 0) {
@@ -79,7 +85,7 @@ public class ShuntingYard {
 
         for (Token token : tokens) {
             switch(token.type) {
-                case NUMBER, VARIABLE -> output.add(token);
+                case NUMBER, VARIABLE, CONSTANT -> output.add(token);
                 case FUNCTION, LEFT_PAREN -> stack.push(token);
                 case OPERATOR -> {
                     while(!stack.isEmpty()) {
@@ -98,7 +104,7 @@ public class ShuntingYard {
                         output.add(stack.pop());
                     }
                     if(stack.isEmpty()) throw new RuntimeException("Mismatched parentheses");
-                    stack.pop(); // remove '('
+                    stack.pop();
                     if(!stack.isEmpty() && stack.peek().type==Token.Type.FUNCTION) {
                         output.add(stack.pop());
                     }
@@ -121,6 +127,14 @@ public class ShuntingYard {
         for(Token token : postfix) {
             switch(token.type) {
                 case NUMBER -> stack.push(Double.parseDouble(token.value));
+                case CONSTANT -> {
+                    switch (token.value) {
+                        case "pi" -> stack.push(Math.PI);
+                        case "e" -> stack.push(Math.E);
+                        case "g" -> stack.push(9.82);
+                        case "gr" -> stack.push((1+Math.sqrt(5))/2);
+                    }
+                }
                 case VARIABLE -> stack.push(xVal);
                 case OPERATOR -> {
                     double b = stack.pop();
@@ -153,6 +167,15 @@ public class ShuntingYard {
         for (Token token : postfix) {
             switch (token.type) {
                 case NUMBER, VARIABLE -> stack.push(token.value);
+                case CONSTANT -> {
+                    switch(token.value) {
+                        case "pi" -> stack.push("\\pi");
+                        case "e" -> stack.push("e");
+                        case "g" -> stack.push("\\g");
+                        case "gr" -> stack.push("\\phi");
+
+                    }
+                }
                 case FUNCTION -> {
                     String arg = stack.pop();
                     switch (token.value) {
@@ -182,6 +205,12 @@ public class ShuntingYard {
                         case "/" -> stack.push("\\frac{" + a + "}{" + b + "}");
                         case "^" -> stack.push(a + "^{" + b + "}");
                     }
+                }
+                case LEFT_PAREN -> {
+                    stack.push("\\left(");
+                }
+                case RIGHT_PAREN -> {
+                    stack.push("\\right)");
                 }
             }
         }

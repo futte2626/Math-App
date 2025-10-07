@@ -10,4 +10,5 @@ public interface Drawable2D {
 
     String getName();
     Color getColor();
+    void setColor(Color color);
 }

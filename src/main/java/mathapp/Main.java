@@ -6,6 +6,7 @@ import mathapp.gui.SideBar;
 import mathapp.objects.twoD.Axis2D;
 import mathapp.objects.twoD.Scene2D;
 import com.formdev.flatlaf.FlatLightLaf;
+import mathapp.objects.twoD.math.Vector2D;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +15,8 @@ import java.awt.geom.Point2D;
 public class Main {
 
     public static void main(String[] args) {
+        String testContains = "Does this word contain something";
+
         // Chooses default font and theme
         try {
             UIManager.setLookAndFeel( new FlatLightLaf() );
@@ -29,6 +32,10 @@ public class Main {
         // Adds fundamentals to scene
         AppCore.scene2D.addListener(AppCore.sidebar);
         AppCore.scene2D.add(new Axis2D(100));
+        Vector2D v1 =new Vector2D(2, -2, "a");
+        AppCore.scene2D.add(v1);
+
+
 
         // Creates JFrame
         JFrame frame = new JFrame("MathApp 2D");

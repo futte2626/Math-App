@@ -7,6 +7,7 @@ module mathapp {
     requires java.base;
     requires com.formdev.flatlaf;
     requires jlatexmath;
+   // requires mathapp;
 
     opens mathapp to javafx.graphics, javafx.fxml;
     exports mathapp;
@@ -14,4 +15,6 @@ module mathapp {
     opens mathapp.gui to javafx.fxml, javafx.graphics;
     exports mathapp.objects.twoD;
     opens mathapp.objects.twoD to javafx.fxml, javafx.graphics;
+    exports mathapp.objects.twoD.math;
+    opens mathapp.objects.twoD.math to javafx.fxml, javafx.graphics;
 }

@@ -1,7 +1,7 @@
 package mathapp.parser;
 
 public class Token {
-    public enum Type { NUMBER, OPERATOR, FUNCTION, VARIABLE, LEFT_PAREN, RIGHT_PAREN }
+    public enum Type { NUMBER, OPERATOR, CONSTANT, FUNCTION, VARIABLE, LEFT_PAREN, RIGHT_PAREN }
 
     public Type type;
     public String value;

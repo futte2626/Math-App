@@ -10,12 +10,8 @@ import java.awt.*;
 public class CommandLine extends JPanel {
     CommandParser parser = new CommandParser();
     JTextField cmdField = new JTextField();
-    private GUI2D gui2D;
-    private Scene2D scene;
 
     public CommandLine() {
-        this.gui2D = AppCore.gui2D;
-        this.scene = AppCore.scene2D;
 
         setPreferredSize(new Dimension(650, 25));
         setBackground(Color.lightGray);
@@ -26,9 +22,9 @@ public class CommandLine extends JPanel {
 
         cmdField.addActionListener(e -> {
             String text = cmdField.getText();
-            parser.parseAndExecute(text, scene);
+            parser.parseAndExecute(text);
             cmdField.setText("");
-            gui2D.repaint();
+            AppCore.gui2D.repaint();
             repaint();
         });
 

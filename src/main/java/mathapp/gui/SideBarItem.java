@@ -1,6 +1,8 @@
 package mathapp.gui;
 
-import mathapp.objects.twoD.Function2D;
+import mathapp.objects.twoD.Drawable2D;
+import mathapp.objects.twoD.math.Function2D;
+import mathapp.objects.twoD.math.Vector2D;
 import mathapp.parser.ShuntingYard;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
@@ -9,7 +11,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SideBarItem extends JPanel {
-    private final Function2D function;
+    private Function2D function;
+    private Vector2D vector;
+    private Drawable2D drawable;
     private final String infoText;
 
     // keep a reference so we can change the label text
@@ -32,7 +36,7 @@ public class SideBarItem extends JPanel {
         if (parts.length >= 2) {
             String lhs = parts[0].trim();
             String rhs = parts[1].trim();
-            String latexText = ShuntingYard.toLatex(rhs);
+            String latexText = ShuntingYard.toLatex(rhs,function.getVariable());
 
             TeXFormula formula = new TeXFormula("$" + lhs + "=" + latexText + "$");
             TeXIcon icon = formula.createTeXIcon(TeXFormula.SERIF, 18);
@@ -59,6 +63,152 @@ public class SideBarItem extends JPanel {
             // Toggle visibility on the SAME Function2D instance
             boolean newVisible = !function.isVisible();
             function.setVisible(newVisible);
+
+            // Update button text
+            hideBtn.setText(newVisible ? "Hide" : "Show");
+
+            // Notify any PropertyChangeListeners registered on this component
+            // name  = "toggleVisibility"
+            // old   = previous value (opposite of newVisible)
+            // new   = new value (newVisible)
+            firePropertyChange("toggleVisibility", !newVisible, newVisible);
+        });
+
+        controlRow.add(delBtn);
+        controlRow.add(hideBtn);
+
+        // Color buttons
+        controlRow.add(makeColorButton(Color.red));
+        controlRow.add(makeColorButton(Color.green));
+        controlRow.add(makeColorButton(Color.blue));
+        controlRow.add(makeColorButton(Color.cyan));
+
+        add(controlRow);
+
+        // Fix size so items don't expand to fill the whole sidebar
+        int h = controlRow.getPreferredSize().height
+                + (getComponentCount() > 1 ? getComponent(0).getPreferredSize().height : 0)
+                + 10;
+        int w = 245;
+        setMinimumSize(new Dimension(w, h));
+        setPreferredSize(new Dimension(w, h));
+        setMaximumSize(new Dimension(w, h));
+    }
+
+    public SideBarItem(Drawable2D drawable) {
+        this.drawable = drawable;
+        this.infoText = drawable.getName();
+
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createLineBorder(Color.black));
+        setBackground(Color.white);
+        setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // ---------- formula row (left-aligned) ----------
+        JPanel formulaRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        formulaRow.setOpaque(false);
+
+        String[] parts = infoText != null ? infoText.split("=") : new String[0];
+        if (parts.length >= 2) {
+            String lhs = parts[0].trim();
+            String rhs = parts[1].trim();
+            String latexText = ShuntingYard.toLatex(rhs,function.getVariable());
+
+            TeXFormula formula = new TeXFormula("$" + lhs + "=" + latexText + "$");
+            TeXIcon icon = formula.createTeXIcon(TeXFormula.SERIF, 18);
+            JLabel label = new JLabel(icon);
+            formulaRow.add(label);
+        }
+        add(formulaRow);
+        add(Box.createRigidArea(new Dimension(0, 6)));
+
+        // ---------- controls row (left-aligned) ----------
+        JPanel controlRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
+        controlRow.setOpaque(false);
+
+        JButton delBtn = makeUtilButton("Del", 50);
+        hideBtn = makeUtilButton(function.isVisible() ? "Hide" : "Show", 55);
+
+        // Wire actions
+        delBtn.addActionListener(e ->
+                // tell the outside world the user wants to delete this function
+                firePropertyChange("deleteFunction", null, function)
+        );
+
+        hideBtn.addActionListener(e -> {
+            // Toggle visibility on the SAME Function2D instance
+            boolean newVisible = !function.isVisible();
+            function.setVisible(newVisible);
+
+            // Update button text
+            hideBtn.setText(newVisible ? "Hide" : "Show");
+
+            // Notify any PropertyChangeListeners registered on this component
+            // name  = "toggleVisibility"
+            // old   = previous value (opposite of newVisible)
+            // new   = new value (newVisible)
+            firePropertyChange("toggleVisibility", !newVisible, newVisible);
+        });
+
+        controlRow.add(delBtn);
+        controlRow.add(hideBtn);
+
+        // Color buttons
+        controlRow.add(makeColorButton(Color.red));
+        controlRow.add(makeColorButton(Color.green));
+        controlRow.add(makeColorButton(Color.blue));
+        controlRow.add(makeColorButton(Color.cyan));
+
+        add(controlRow);
+
+        // Fix size so items don't expand to fill the whole sidebar
+        int h = controlRow.getPreferredSize().height
+                + (getComponentCount() > 1 ? getComponent(0).getPreferredSize().height : 0)
+                + 10;
+        int w = 245;
+        setMinimumSize(new Dimension(w, h));
+        setPreferredSize(new Dimension(w, h));
+        setMaximumSize(new Dimension(w, h));
+    }
+
+    public SideBarItem(Vector2D vector2D) {
+        this.vector = vector2D;
+        this.infoText = vector2D.getName();
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createLineBorder(Color.black));
+        setBackground(Color.white);
+        setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // ---------- formula row (left-aligned) ----------
+        JPanel formulaRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        formulaRow.setOpaque(false);
+
+        TeXFormula formula = new TeXFormula("$\\vec{" + vector2D.getName() + "}=<" + vector2D.getX() + "," + vector2D.getY() + ">$");
+        TeXIcon icon = formula.createTeXIcon(TeXFormula.SERIF, 18);
+        JLabel label = new JLabel(icon);
+        formulaRow.add(label);
+        add(formulaRow);
+        add(Box.createRigidArea(new Dimension(0, 6)));
+
+        // ---------- controls row (left-aligned) ----------
+        JPanel controlRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
+        controlRow.setOpaque(false);
+
+        JButton delBtn = makeUtilButton("Del", 50);
+        hideBtn = makeUtilButton(vector2D.isVisible() ? "Hide" : "Show", 55);
+
+        // Wire actions
+        delBtn.addActionListener(e ->
+                // tell the outside world the user wants to delete this function
+                firePropertyChange("deleteFunction", null, vector2D)
+        );
+
+        hideBtn.addActionListener(e -> {
+            // Toggle visibility on the SAME Function2D instance
+            boolean newVisible = !vector2D.isVisible();
+            vector2D.setVisible(newVisible);
 
             // Update button text
             hideBtn.setText(newVisible ? "Hide" : "Show");

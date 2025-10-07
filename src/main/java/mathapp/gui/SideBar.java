@@ -1,9 +1,14 @@
 package mathapp.gui;
 
 import mathapp.AppCore;
+import mathapp.gui.SidebarItems.FunctionSidebarItem;
+import mathapp.gui.SidebarItems.FunctionSidebarItem;
+import mathapp.gui.SidebarItems.VectorSidebarItem;
+import mathapp.gui.SidebarItems.VectorSidebarItem;
 import mathapp.objects.twoD.Drawable2D;
-import mathapp.objects.twoD.Function2D;
 import mathapp.objects.twoD.Scene2D;
+import mathapp.objects.twoD.math.Function2D;
+import mathapp.objects.twoD.math.Vector2D;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,9 +17,10 @@ import java.util.ArrayList;
 public class SideBar extends JPanel implements SceneListener {
     private final JScrollPane scrollPane;
     private final JPanel contentPanel;
-    private final ArrayList<SideBarItem> items;
+    private final ArrayList<FunctionSidebarItem> functions;
+    private final ArrayList<VectorSidebarItem> vectors;
     private final JPanel gui2D; // panel where Scene2D is drawn
-    private Scene2D scene;
+    private final Scene2D scene;
 
     public SideBar() {
         this.gui2D = AppCore.gui2D;
@@ -36,59 +42,97 @@ public class SideBar extends JPanel implements SceneListener {
         scrollPane.setBorder(BorderFactory.createEmptyBorder()); // remove default border
         add(scrollPane, BorderLayout.CENTER);
 
-        items = new ArrayList<>();
+        functions = new ArrayList<>();
+        vectors = new ArrayList<>();
     }
 
     public void AddItem(Function2D func) {
-        SideBarItem item = new SideBarItem(func);
+        FunctionSidebarItem item = new FunctionSidebarItem(func);
         item.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // --- hook up listeners ---
-        item.addPropertyChangeListener("toggleVisibility", evt -> {
-            // function visibility already toggled inside item
-            gui2D.repaint();
-        });
-
-        item.addPropertyChangeListener("functionColor", evt -> {
-            gui2D.repaint();
-        });
+        item.addPropertyChangeListener("toggleVisibility", evt -> gui2D.repaint());
+        item.addPropertyChangeListener("functionColor", evt -> gui2D.repaint());
 
         item.addPropertyChangeListener("deleteFunction", evt -> {
             scene.remove(func); // remove from scene
-            items.remove(item);
+            functions.remove(item);
             contentPanel.remove(item);
             contentPanel.revalidate();
             contentPanel.repaint();
             gui2D.repaint();
         });
 
-        items.add(item);
+        functions.add(item);
         contentPanel.add(item);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         contentPanel.revalidate();
         contentPanel.repaint();
     }
 
+    public void AddItem(Vector2D vec) {
+        VectorSidebarItem item = new VectorSidebarItem(vec);
+        item.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // --- hook up listeners ---
+        item.addPropertyChangeListener("toggleVisibility", evt -> gui2D.repaint());
+        item.addPropertyChangeListener("functionColor", evt -> gui2D.repaint());
+
+        item.addPropertyChangeListener("deleteVector", evt -> {
+            scene.remove(vec); // remove from scene
+            vectors.remove(item);
+            contentPanel.remove(item);
+            contentPanel.revalidate();
+            contentPanel.repaint();
+            gui2D.repaint();
+        });
+
+        vectors.add(item);
+        contentPanel.add(item);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        contentPanel.revalidate();
+        contentPanel.repaint();
+    }
 
     @Override
     public void objectAdded(Drawable2D obj) {
         if (obj instanceof Function2D func && func.getName() != null && !func.getName().isEmpty()) {
             AddItem(func);
         }
+        if (obj instanceof Vector2D vec && vec.getName() != null && !vec.getName().isEmpty()) {
+            AddItem(vec);
+        }
     }
 
     @Override
     public void objectRemoved(Drawable2D obj) {
-        SideBarItem toRemove = null;
-        for (SideBarItem item : items) {
-            if (item.getFunction().equals(obj)) {
-                toRemove = item;
+        // check functions
+        FunctionSidebarItem funcToRemove = null;
+        for (FunctionSidebarItem item : functions) {
+            if (item.getFunction() == obj) {
+                funcToRemove = item;
                 break;
             }
         }
-        if (toRemove != null) {
-            items.remove(toRemove);
-            contentPanel.remove(toRemove);
+        if (funcToRemove != null) {
+            functions.remove(funcToRemove);
+            contentPanel.remove(funcToRemove);
+            contentPanel.revalidate();
+            contentPanel.repaint();
+            return;
+        }
+
+        // check vectors
+        VectorSidebarItem vecToRemove = null;
+        for (VectorSidebarItem item : vectors) {
+            if (item.getVector() == obj) {
+                vecToRemove = item;
+                break;
+            }
+        }
+        if (vecToRemove != null) {
+            vectors.remove(vecToRemove);
+            contentPanel.remove(vecToRemove);
             contentPanel.revalidate();
             contentPanel.repaint();
         }

@@ -1,8 +1,9 @@
-package mathapp.objects.twoD;
+package mathapp.objects.twoD.math;
+
+import mathapp.objects.twoD.Drawable2D;
 
 import java.awt.Graphics2D;
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.BasicStroke;
 
 import java.awt.geom.Point2D;
@@ -10,13 +11,15 @@ import java.util.function.Function;
 
 public class Function2D implements Drawable2D {
     private Function<Double, Double> function; // the actual f(x)
+    private String variable;
     private Color color;
     private boolean visible;
     private String functionText;
 
-    public Function2D(Function<Double, Double> function, Color color, String text) {
+    public Function2D(Function<Double, Double> function,String var, Color color, String text) {
         this.function = function;
         this.color = color;
+        this.variable = var;
         this.functionText = text;
         this.visible = true;
     }
@@ -32,6 +35,7 @@ public class Function2D implements Drawable2D {
     public String getName() { return functionText; }
     public Function<Double, Double> getFunction() { return function; }
     public void setVisible(boolean visible) { this.visible = visible; }
+    public String getVariable() { return variable; }
     public boolean isVisible() {
         return visible;
     }

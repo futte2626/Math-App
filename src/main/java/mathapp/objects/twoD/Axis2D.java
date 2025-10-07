@@ -20,6 +20,9 @@ public class Axis2D implements Drawable2D{
     public boolean isVisible() {
         return true;
     }
+    public void setColor(Color color) {
+        this.color = color;
+    }
 
     @Override
     public void draw(Graphics2D g2d, int scale, Point2D.Double origin) {
