@@ -1,10 +1,6 @@
 package mathapp.gui.SidebarItems;
 
-import mathapp.gui.SidebarItems.AbstractSidebarItem;
-import mathapp.objects.twoD.Drawable2D;
-import mathapp.objects.twoD.math.Function2D;
 import mathapp.objects.twoD.math.Vector2D;
-import org.scilab.forge.jlatexmath.TeXFormula;
 
 import javax.swing.*;
 import java.awt.*;

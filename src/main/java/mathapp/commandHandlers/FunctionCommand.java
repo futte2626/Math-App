@@ -23,7 +23,7 @@ public class FunctionCommand implements Command {
             String name = args[2];
 
             Function<Double,Double> evaluator = ShuntingYard.parseFunction(expression, variable);
-            String funcDef = name+"("+variable+")="+expression;
+            String funcDef = name+"("+variable+") = "+expression;
             Function2D func = new Function2D(evaluator,variable,Color.red,funcDef);
 
             AppCore.scene2D.add(func);

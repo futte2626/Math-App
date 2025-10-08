@@ -3,6 +3,7 @@ package mathapp.gui;
 import mathapp.AppCore;
 import mathapp.gui.SidebarItems.FunctionSidebarItem;
 import mathapp.gui.SidebarItems.FunctionSidebarItem;
+import mathapp.gui.SidebarItems.SidebarItem;
 import mathapp.gui.SidebarItems.VectorSidebarItem;
 import mathapp.gui.SidebarItems.VectorSidebarItem;
 import mathapp.objects.twoD.Drawable2D;
@@ -48,6 +49,7 @@ public class SideBar extends JPanel implements SceneListener {
 
     public void AddItem(Function2D func) {
         FunctionSidebarItem item = new FunctionSidebarItem(func);
+        SidebarItem it = new SidebarItem(func);
         item.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // --- hook up listeners ---
