@@ -44,13 +44,20 @@ public class Axis2D implements Drawable2D{
         // Draw X-axis ticks and labels
         int tickLength = 7;
         g2d.scale(1, -1);
-        for (int x = (int) -origin.x; x < width-origin.x; x++) {
-            if(x==0) continue;
-            if(x % tickSpacing*tickValue == 0){
+        int index = 1;
+        for (int x = (int) -origin.x; x < width - origin.x; x++) {
+            if (x == 0) continue;
+            if (x % tickSpacing == 0) {
                 g2d.drawLine(x, -tickLength, x, tickLength);
-                String nmbString = String.format("%.2f", x / (double)scale);
-                g2d.drawString(nmbString, x-3, 20);
 
+                double value = x / (double) scale;
+                value = Math.round(value / tickValue) * tickValue;
+
+                // format nicely
+                int powTen = (int) Math.abs(Math.floor(Math.log10(tickValue)));
+                String precision = "%." + powTen + "f";
+                String nmbString = String.format(precision, value);
+                g2d.drawString(nmbString, x - 10, 20);
             }
         }
         g2d.scale(1, -1);
@@ -63,7 +70,15 @@ public class Axis2D implements Drawable2D{
             if (y == 0) continue;
             if (y % tickSpacing*tickValue == 0) {
                 g2d.drawLine(-tickLength, y, tickLength, y);
-                String nmbString = String.format("%.2f", y / (double)scale);
+
+                double value = y / (double) scale;
+                value = Math.round(value / tickValue) * tickValue;
+
+                // format nicely
+                int powTen = (int) Math.abs(Math.floor(Math.log10(tickValue)));
+                String precision = "%." + powTen + "f";
+                String nmbString = String.format(precision, value);
+
                 g2d.scale(1, -1);
                 g2d.drawString(nmbString, -35, -y+7);
                 g2d.scale(1, -1);

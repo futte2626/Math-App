@@ -60,8 +60,13 @@ public class Vector2D implements Drawable2D {
         double endY = scale*(startY + y);
         g2d.drawLine((int)startX*scale,(int)startY*scale, (int)endX, (int)endY);
         double theta = getAngle();
-        g2d.drawLine((int)endX,(int)endY,(int)(endX-20*Math.cos(Math.toRadians(30)+theta)),(int)(endY-20*Math.sin(Math.toRadians(30)+theta)));
-        g2d.drawLine((int)endX,(int)endY,(int)(endX-20*Math.cos(theta-Math.toRadians(30))),(int)(endY-20*Math.sin(theta-Math.toRadians(30))));
+       // g2d.drawLine((int)endX,(int)endY,(int)(endX-20*Math.cos(Math.toRadians(30)+theta)),(int)(endY-20*Math.sin(Math.toRadians(30)+theta)));
+      //  g2d.drawLine((int)endX,(int)endY,(int)(endX-20*Math.cos(theta-Math.toRadians(30))),(int)(endY-20*Math.sin(theta-Math.toRadians(30))));
+        Polygon poly = new Polygon();
+        poly.addPoint((int)endX, (int)endY);
+        poly.addPoint((int)(endX-20*Math.cos(Math.toRadians(20)+theta)), (int)(endY-20*Math.sin(Math.toRadians(20)+theta)));
+        poly.addPoint((int)(endX-20*Math.cos(-Math.toRadians(20)+theta)), (int)(endY-20*Math.sin(-Math.toRadians(20)+theta)));
+        g2d.fillPolygon(poly);
     }
 
     public double getAngle() {

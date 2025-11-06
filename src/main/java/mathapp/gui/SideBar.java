@@ -65,6 +65,7 @@ public class SideBar extends JPanel implements SceneListener {
             gui2D.repaint();
         });
 
+
         functions.add(item);
         contentPanel.add(item);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 5)));

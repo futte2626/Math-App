@@ -44,7 +44,7 @@ public class Main {
         frame.add(AppCore.cmdLine, BorderLayout.SOUTH);
         frame.add(AppCore.sidebar, BorderLayout.WEST);
         frame.add(AppCore.gui2D, BorderLayout.CENTER);
-        frame.setSize(1500, 1000);
+        frame.setSize(1000, 750);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
